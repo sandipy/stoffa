@@ -1,4 +1,5 @@
 import { COMMON_UI_TRANSLATIONS } from './commonTranslations';
+import { GENERATED_TRANSLATIONS } from './generatedTranslations';
 import { translationMdService } from '../services/translationMdService';
 
 export interface TranslationDictionary {
@@ -1040,6 +1041,14 @@ for (const lang of Object.keys(COMMON_UI_TRANSLATIONS)) {
   }
 }
 
+// Merge generated comprehensive translations for all sections, heroes, categories, and footers
+for (const lang of Object.keys(GENERATED_TRANSLATIONS)) {
+  if (!COMPLETE_TRANSLATIONS[lang]) {
+    COMPLETE_TRANSLATIONS[lang] = {};
+  }
+  Object.assign(COMPLETE_TRANSLATIONS[lang], GENERATED_TRANSLATIONS[lang]);
+}
+
 /**
  * Intelligent helper to translate any text key or plain English phrase
  */
@@ -1071,12 +1080,42 @@ export function translateWebsiteText(
     return dict[keyOrText];
   }
 
-  // 2. Search key where English translation matches keyOrText
   const enDict = COMPLETE_TRANSLATIONS.en;
   const trimmed = keyOrText.trim();
+  const lower = trimmed.toLowerCase();
+
+  // 2. Case-insensitive key match in target dictionary
+  for (const [k, val] of Object.entries(dict)) {
+    if (k.toLowerCase() === lower) {
+      return val;
+    }
+  }
+
+  // 3. Search key where English translation or key matches keyOrText
   for (const [k, val] of Object.entries(enDict)) {
-    if (val.toLowerCase() === trimmed.toLowerCase()) {
+    if (val.toLowerCase() === lower || k.toLowerCase() === lower) {
       if (dict[k]) return dict[k];
+    }
+  }
+
+  // 4. Normalized search (ignores special bullet points, dash variants, extra spaces, quotes)
+  const normalize = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[\u2022•\-_,;:'"✦]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  const normKey = normalize(keyOrText);
+  if (normKey) {
+    for (const [k, val] of Object.entries(dict)) {
+      if (normalize(k) === normKey) {
+        return val;
+      }
+    }
+    for (const [k, val] of Object.entries(enDict)) {
+      if (normalize(k) === normKey || normalize(val) === normKey) {
+        if (dict[k]) return dict[k];
+      }
     }
   }
 

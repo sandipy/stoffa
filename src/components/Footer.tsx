@@ -236,14 +236,14 @@ export const Footer: React.FC = () => {
                 <div className="flex items-start gap-2 pt-0.5">
                   <MapPin className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
                   <span className="text-stone-600 leading-tight">
-                    {cmsData.footer.contactAddress}
+                    {t(cmsData.footer.contactAddress, cmsData.footer.contactAddress)}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2 pt-0.5">
                   <Clock className="w-3.5 h-3.5 text-stone-500 shrink-0" />
                   <span className="text-stone-500 text-[11px]">
-                    {cmsData.footer.contactHours}
+                    {t(cmsData.footer.contactHours, cmsData.footer.contactHours)}
                   </span>
                 </div>
               </div>
@@ -296,7 +296,7 @@ export const Footer: React.FC = () => {
               </div>
               <button
                 type="submit"
-                className="px-4 py-2 rounded-[4px] bg-stone-900 hover:bg-black text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-2xs cursor-pointer flex items-center gap-1 shrink-0"
+                className="px-4 py-2 rounded-xl btn-champagne-primary text-xs font-bold uppercase tracking-wider transition-all shadow-xs hover:shadow-md cursor-pointer flex items-center gap-1 shrink-0"
               >
                 {subscribed ? (
                   <>

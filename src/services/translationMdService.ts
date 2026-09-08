@@ -7,11 +7,13 @@
  * ensuring no external internet or translation API is required.
  */
 
+import bundledTranslationsMd from '../../translations.md?raw';
+
 export interface ParsedTranslations {
   [langCode: string]: Record<string, string>;
 }
 
-const STORAGE_KEY_MD = 'accessoire_translations_md_content';
+const STORAGE_KEY_MD = 'accessoire_translations_md_content_v6';
 const STORAGE_KEY_LAST_MODIFIED = 'accessoire_translations_last_modified';
 
 class TranslationMdService {
@@ -22,7 +24,13 @@ class TranslationMdService {
   private initPromise: Promise<void> | null = null;
 
   constructor() {
-    // Attempt fast synchronous load from localStorage if available
+    // Preload bundled markdown synchronously so translations are available immediately
+    if (bundledTranslationsMd) {
+      this.rawMarkdown = bundledTranslationsMd;
+      this.translations = this.parseMarkdown(bundledTranslationsMd);
+      this.isInitialized = true;
+    }
+    // Attempt load from localStorage if available and up-to-date
     this.loadFromCache();
   }
 
@@ -31,6 +39,12 @@ class TranslationMdService {
       if (typeof window !== 'undefined' && window.localStorage) {
         const cachedMd = window.localStorage.getItem(STORAGE_KEY_MD);
         if (cachedMd && cachedMd.length > 500) {
+          // If cached content is smaller than bundled markdown, it is an outdated stale cache
+          if (this.rawMarkdown && cachedMd.length < this.rawMarkdown.length) {
+            window.localStorage.setItem(STORAGE_KEY_MD, this.rawMarkdown);
+            window.localStorage.setItem(STORAGE_KEY_LAST_MODIFIED, new Date().toISOString());
+            return true;
+          }
           this.rawMarkdown = cachedMd;
           this.translations = this.parseMarkdown(cachedMd);
           this.isInitialized = true;
@@ -138,11 +152,12 @@ class TranslationMdService {
 
       // Check for table row: | key | translation |
       if (line.startsWith('|') && line.endsWith('|')) {
-        const parts = line.split('|').map((p) => p.trim());
+        const safeLine = line.replace(/\\\|/g, '__ESCAPED_PIPE__');
+        const parts = safeLine.split('|').map((p) => p.trim().replace(/__ESCAPED_PIPE__/g, '|'));
         // parts[0] is empty, parts[1] is key, parts[2] is translation, parts[3] is empty
         if (parts.length >= 3) {
-          const key = parts[1].replace(/\\\|/g, '|').trim();
-          const val = parts[2].replace(/\\\|/g, '|').trim();
+          const key = parts[1].trim();
+          const val = parts[2].trim();
           if (key && val) {
             result[currentLang][key] = val;
           }
@@ -182,29 +197,68 @@ class TranslationMdService {
 
     const langDict = this.translations[langCode];
     const enDict = this.translations['en'] || {};
+    const trimmed = keyOrText.trim();
+    const lower = trimmed.toLowerCase();
 
     // 1. Direct key match in chosen language
-    if (langDict && langDict[keyOrText]) {
-      return langDict[keyOrText];
-    }
-
-    // 2. Direct key match in English
-    if (langCode === 'en' && enDict[keyOrText]) {
-      return enDict[keyOrText];
-    }
-
-    // 3. Search key where English value matches keyOrText
-    const trimmed = keyOrText.trim().toLowerCase();
-    for (const [k, val] of Object.entries(enDict)) {
-      if (val.trim().toLowerCase() === trimmed) {
-        if (langDict && langDict[k]) {
-          return langDict[k];
+    if (langDict) {
+      if (langDict[keyOrText]) return langDict[keyOrText];
+      if (langDict[trimmed]) return langDict[trimmed];
+      // Case-insensitive key match in target language
+      for (const [k, val] of Object.entries(langDict)) {
+        if (k.toLowerCase() === lower) {
+          return val;
         }
-        return val;
       }
     }
 
-    // 4. Return fallback or original key
+    // 2. Direct key match in English
+    if (langCode === 'en') {
+      if (enDict[keyOrText]) return enDict[keyOrText];
+      if (enDict[trimmed]) return enDict[trimmed];
+    }
+
+    // 3. Search key where English value matches keyOrText
+    for (const [k, val] of Object.entries(enDict)) {
+      if (val.trim().toLowerCase() === lower || k.toLowerCase() === lower) {
+        if (langDict && langDict[k]) {
+          return langDict[k];
+        }
+        if (langCode === 'en') {
+          return val;
+        }
+      }
+    }
+
+    // 4. Normalized search (ignores special bullet points, dash variants, extra spaces, quotes)
+    const normalize = (s: string) =>
+      s
+        .toLowerCase()
+        .replace(/[\u2022•\-_,;:'"✦]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const normKey = normalize(keyOrText);
+    if (normKey) {
+      if (langDict) {
+        for (const [k, val] of Object.entries(langDict)) {
+          if (normalize(k) === normKey) {
+            return val;
+          }
+        }
+      }
+      for (const [k, val] of Object.entries(enDict)) {
+        if (normalize(k) === normKey || normalize(val) === normKey) {
+          if (langDict && langDict[k]) {
+            return langDict[k];
+          }
+          if (langCode === 'en') {
+            return val;
+          }
+        }
+      }
+    }
+
+    // 5. Return fallback or original key
     return fallback || enDict[keyOrText] || keyOrText;
   }
 

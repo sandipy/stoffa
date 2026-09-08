@@ -1,12 +1,20 @@
 import React from 'react';
-import { X, ZoomIn, ZoomOut } from 'lucide-react';
+import { X, ZoomIn, ZoomOut, Download } from 'lucide-react';
 import { useCommerce } from '../context/CommerceContext';
+import sizeChartImage from '../assets/images/stoffasizechart.svg';
 
 export const SizeGuideModal: React.FC = () => {
   const { isSizeGuideOpen, setIsSizeGuideOpen, t } = useCommerce();
   const [zoomLevel, setZoomLevel] = React.useState<number>(1);
+  const [imgSrc, setImgSrc] = React.useState<string>(sizeChartImage);
+
+  React.useEffect(() => {
+    setImgSrc(sizeChartImage);
+  }, [isSizeGuideOpen]);
 
   if (!isSizeGuideOpen) return null;
+
+  const publicFallback = `${import.meta.env.BASE_URL}stoffasizechart.svg`;
 
   return (
     <div
@@ -41,6 +49,18 @@ export const SizeGuideModal: React.FC = () => {
               <span className="hidden sm:inline">{zoomLevel === 1 ? 'Zoom' : 'Reset'}</span>
             </button>
 
+            {/* Direct Image Link / Download */}
+            <a
+              href={imgSrc}
+              target="_blank"
+              rel="noopener noreferrer"
+              download="stoffa-footwear-size-guide.svg"
+              className="p-1.5 rounded-lg border border-stone-200 text-stone-600 hover:text-stone-950 hover:bg-stone-50 text-xs font-mono flex items-center gap-1 transition-colors"
+              title="Open size chart directly"
+            >
+              <Download className="w-3.5 h-3.5" />
+            </a>
+
             {/* Close Button */}
             <button
               id="size-guide-close-btn"
@@ -60,7 +80,12 @@ export const SizeGuideModal: React.FC = () => {
             style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}
           >
             <img
-              src="/stoffasizechart.svg"
+              src={imgSrc}
+              onError={() => {
+                if (imgSrc !== publicFallback) {
+                  setImgSrc(publicFallback);
+                }
+              }}
               alt="Official Footwear Size Guide Chart"
               className="w-full max-w-lg h-auto object-contain select-none shadow-xs rounded-lg border border-stone-100"
               referrerPolicy="no-referrer"

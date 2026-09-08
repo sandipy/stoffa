@@ -55,7 +55,7 @@ export const BeachToTableStory: React.FC = () => {
                 <button
                   id="beach-to-table-our-story-btn"
                   onClick={() => setIsStoryModalOpen(true)}
-                  className="px-6 py-3 rounded-[4px] bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs uppercase tracking-widest transition-all shadow-sm hover:shadow-md flex items-center gap-2 cursor-pointer"
+                  className="px-6 py-3 rounded-xl btn-champagne-primary font-semibold text-xs uppercase tracking-widest transition-all shadow-sm hover:shadow-md flex items-center gap-2 cursor-pointer"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
                   <span>{t('OUR STORY', 'OUR STORY')}</span>
@@ -120,7 +120,7 @@ export const BeachToTableStory: React.FC = () => {
             <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
               <button
                 onClick={() => setIsStoryModalOpen(false)}
-                className="px-6 py-2.5 rounded-[4px] bg-slate-900 text-white text-xs font-medium uppercase tracking-wider hover:bg-slate-800 transition-colors"
+                className="px-6 py-2.5 rounded-xl btn-champagne-primary text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
               >
                 {t('Close', 'Close')}
               </button>
