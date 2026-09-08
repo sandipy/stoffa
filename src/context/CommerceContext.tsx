@@ -12,7 +12,7 @@ import {
   TRANSLATIONS,
 } from '../data/mockData';
 import { translateWebsiteText } from '../data/translationsData';
-import { translationMdService } from '../services/translationMdService';
+import { translationMdService, WebsiteCoverageReport } from '../services/translationMdService';
 import { STOFFA_BRAND_STORY, STOFFA_STORE_PRODUCTS } from '../data/stoffaCatalog';
 import {
   Affiliate,
@@ -138,6 +138,8 @@ interface CommerceContextType {
   reloadTranslationsFromMd: () => Promise<boolean>;
   getRawTranslationsMd: () => string;
   applyNewTranslationsMd: (md: string) => { success: boolean; count: number; error?: string };
+  scanWebsiteCoverage: (additionalStrings?: string[]) => WebsiteCoverageReport;
+  addMissingStringsToMd: (strings: string[]) => { addedCount: number };
 
   // Size Guide Modal
   isSizeGuideOpen: boolean;
@@ -435,6 +437,23 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const applyNewTranslationsMd = (md: string) => {
     return translationMdService.applyNewMarkdown(md);
+  };
+
+  const scanWebsiteCoverage = (additionalStrings?: string[]): WebsiteCoverageReport => {
+    const dynamicCandidates = additionalStrings ? [...additionalStrings] : [];
+    products.forEach((p) => {
+      if (p.title) dynamicCandidates.push(p.title);
+      if (p.subtitle) dynamicCandidates.push(p.subtitle);
+      if (p.category) dynamicCandidates.push(p.category);
+      if (p.badge) dynamicCandidates.push(p.badge);
+      if (p.materials) dynamicCandidates.push(p.materials);
+    });
+    if (storytellingText) dynamicCandidates.push(storytellingText);
+    return translationMdService.scanWebsiteCoverage(dynamicCandidates);
+  };
+
+  const addMissingStringsToMd = (strings: string[]) => {
+    return translationMdService.addMissingStringsToMd(strings);
   };
   const [heroSlides, setHeroSlides] = useState<HeroSlideConfig[]>(() => loadHeroSlides());
 
@@ -1450,6 +1469,8 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         reloadTranslationsFromMd,
         getRawTranslationsMd,
         applyNewTranslationsMd,
+        scanWebsiteCoverage,
+        addMissingStringsToMd,
         isSizeGuideOpen,
         setIsSizeGuideOpen,
         quotaAlert,

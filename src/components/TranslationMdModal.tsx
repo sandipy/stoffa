@@ -12,8 +12,10 @@ import {
   Table,
   CheckCircle2,
   Sparkles,
+  RefreshCw,
+  Plus,
 } from 'lucide-react';
-import { translationMdService } from '../services/translationMdService';
+import { translationMdService, WebsiteCoverageReport } from '../services/translationMdService';
 import { useCommerce } from '../context/CommerceContext';
 
 export const TranslationMdModal: React.FC = () => {
@@ -24,6 +26,8 @@ export const TranslationMdModal: React.FC = () => {
     activeLanguage,
     setLanguage,
     t,
+    scanWebsiteCoverage,
+    addMissingStringsToMd,
   } = useCommerce();
 
   const [activeTab, setActiveTab] = useState<'table' | 'raw'>('table');
@@ -33,6 +37,33 @@ export const TranslationMdModal: React.FC = () => {
   const [tableData, setTableData] = useState<Record<string, Record<string, string>>>({});
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   const [modifiedCount, setModifiedCount] = useState(0);
+  const [coverageReport, setCoverageReport] = useState<WebsiteCoverageReport | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
+
+  const runCoverageScan = () => {
+    setIsScanning(true);
+    try {
+      const report = scanWebsiteCoverage();
+      setCoverageReport(report);
+    } catch (e) {
+      console.error('Scan error:', e);
+    } finally {
+      setIsScanning(false);
+    }
+  };
+
+  const handleAutoAddMissing = () => {
+    if (!coverageReport || coverageReport.missingStrings.length === 0) return;
+    const res = addMissingStringsToMd(coverageReport.missingStrings);
+    const updatedDict = translationMdService.getTranslationsDictionary();
+    setTableData({ ...updatedDict });
+    setRawMarkdown(translationMdService.getRawMarkdown());
+    setStatusMessage({
+      type: 'success',
+      text: `Auto-added ${res.addedCount} website strings into translations.md across all languages!`,
+    });
+    runCoverageScan();
+  };
 
   // Sync state when modal opens
   useEffect(() => {
@@ -43,6 +74,10 @@ export const TranslationMdModal: React.FC = () => {
       setSelectedLang(activeLanguage.code || 'en');
       setStatusMessage(null);
       setModifiedCount(0);
+      try {
+        const report = scanWebsiteCoverage();
+        setCoverageReport(report);
+      } catch (e) {}
     }
   }, [isTranslationMdModalOpen, activeLanguage.code]);
 
@@ -196,6 +231,50 @@ export const TranslationMdModal: React.FC = () => {
           >
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span className="font-medium">{statusMessage.text}</span>
+          </div>
+        )}
+
+        {/* Coverage Scanner Bar */}
+        {coverageReport && (
+          <div className="px-5 py-2 bg-[#f4ece1] border-b border-[#e5dbc9] flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-[#241c15]">Website Coverage:</span>
+              <span className="px-2 py-0.5 rounded-full bg-[#ede4d4] font-mono font-bold text-[#6b5843] border border-[#d6c9b6]">
+                {coverageReport.coveragePercentage}% ({coverageReport.coveredStrings}/{coverageReport.totalStrings} strings)
+              </span>
+              {coverageReport.missingStrings.length > 0 ? (
+                <span className="text-amber-800 font-medium">
+                  • {coverageReport.missingStrings.length} website string(s) need indexing
+                </span>
+              ) : (
+                <span className="text-emerald-800 font-medium flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> All website text covered in MD
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={runCoverageScan}
+                disabled={isScanning}
+                className="px-2.5 py-1 rounded-lg bg-white/80 hover:bg-white text-[#4a3d2f] text-[11px] font-semibold flex items-center gap-1 border border-[#d6c9b6] cursor-pointer transition-colors"
+                title="Scan website to check if all strings exist in MD"
+              >
+                <RefreshCw className={`w-3 h-3 ${isScanning ? 'animate-spin' : ''}`} />
+                <span>{isScanning ? 'Scanning...' : 'Rescan'}</span>
+              </button>
+
+              {coverageReport.missingStrings.length > 0 && (
+                <button
+                  onClick={handleAutoAddMissing}
+                  className="px-2.5 py-1 rounded-lg bg-amber-800 hover:bg-amber-900 text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
+                  title="Automatically add missing strings to translations.md"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Auto-Add {coverageReport.missingStrings.length} Missing</span>
+                </button>
+              )}
+            </div>
           </div>
         )}
 

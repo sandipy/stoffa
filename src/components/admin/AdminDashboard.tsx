@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AlertCircle,
   ArrowUpRight,
@@ -81,11 +81,58 @@ export const AdminDashboard: React.FC = () => {
     setIsMediaGalleryOpen,
     setIsHeroCsvModalOpen,
     openPageHeroManager,
+    setIsTranslationMdModalOpen,
+    scanWebsiteCoverage,
+    addMissingStringsToMd,
+    downloadTranslationsMdFile,
   } = useCommerce();
 
   // Currency & Language modal states
   const [showAddCurrencyModal, setShowAddCurrencyModal] = useState(false);
   const [showAddLanguageModal, setShowAddLanguageModal] = useState(false);
+
+  // translations.md Text Coverage Scanner State
+  const [coverageReport, setCoverageReport] = useState<{
+    totalStrings: number;
+    coveredStrings: number;
+    missingStrings: string[];
+    coveragePercentage: number;
+    languagesCount: number;
+    lastScanned: string;
+  } | null>(null);
+  const [isScanningCoverage, setIsScanningCoverage] = useState(false);
+  const [coverageFeedback, setCoverageFeedback] = useState<string | null>(null);
+  const [showMissingList, setShowMissingList] = useState(false);
+
+  const runCoverageScan = () => {
+    setIsScanningCoverage(true);
+    try {
+      const report = scanWebsiteCoverage();
+      setCoverageReport(report);
+      if (report.missingStrings.length === 0) {
+        setCoverageFeedback('100% of website text is indexed and covered in translations.md!');
+      } else {
+        setCoverageFeedback(`Scan complete: ${report.missingStrings.length} website string(s) are not yet indexed in translations.md.`);
+      }
+    } catch (e: any) {
+      setCoverageFeedback('Error scanning website text: ' + (e?.message || 'unknown error'));
+    } finally {
+      setIsScanningCoverage(false);
+    }
+  };
+
+  const handleAutoAddMissingStrings = () => {
+    if (!coverageReport || coverageReport.missingStrings.length === 0) return;
+    const res = addMissingStringsToMd(coverageReport.missingStrings);
+    setCoverageFeedback(`Successfully added ${res.addedCount} new string(s) into translations.md across all languages!`);
+    runCoverageScan();
+  };
+
+  useEffect(() => {
+    if (adminTab === 'i18n_currencies' && !coverageReport) {
+      runCoverageScan();
+    }
+  }, [adminTab]);
 
   // CSV Catalog & Storytelling State
   const [csvInputText, setCsvInputText] = useState('');
@@ -444,12 +491,165 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="flex items-center gap-2">
                 <button
+                  id="admin-translations-md-btn"
+                  onClick={() => setIsTranslationMdModalOpen(true)}
+                  className="px-3.5 py-2 rounded-xl btn-champagne-primary text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer"
+                  title="Open offline Markdown translation dictionary manager"
+                >
+                  <FileText className="w-3.5 h-3.5 text-[#8c7355]" />
+                  <span>translations.md Dictionary</span>
+                </button>
+
+                <button
                   onClick={() => setShowAddLanguageModal(true)}
                   className="px-3.5 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add Language from List</span>
                 </button>
+              </div>
+            </div>
+
+            {/* translations.md Backend Text Coverage & Scanner Panel */}
+            <div className="p-4 sm:p-5 rounded-xl bg-stone-50 border border-stone-200 space-y-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <div className="p-2.5 rounded-lg bg-stone-200/70 text-stone-700 mt-0.5">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-serif font-bold text-stone-900 text-base">
+                        translations.md Dictionary & Website Scanner
+                      </h4>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold">
+                        Backend Only • 0ms Lag
+                      </span>
+                    </div>
+                    <p className="text-xs text-stone-600 mt-0.5">
+                      Audits all website text (products, categories, buttons, announcements) against <code className="font-mono font-semibold text-stone-800">translations.md</code>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    id="admin-scan-website-strings-btn"
+                    onClick={runCoverageScan}
+                    disabled={isScanningCoverage}
+                    className="px-3 py-1.5 rounded-lg bg-white border border-stone-300 text-stone-700 hover:bg-stone-100 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 shadow-2xs"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isScanningCoverage ? 'animate-spin' : ''}`} />
+                    <span>{isScanningCoverage ? 'Scanning...' : 'Scan Website Strings'}</span>
+                  </button>
+
+                  <button
+                    id="admin-open-dictionary-btn"
+                    onClick={() => setIsTranslationMdModalOpen(true)}
+                    className="px-3 py-1.5 rounded-lg btn-champagne-primary text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-[#8c7355]" />
+                    <span>Open Editor</span>
+                  </button>
+
+                  <button
+                    id="admin-download-md-btn"
+                    onClick={downloadTranslationsMdFile}
+                    className="px-3 py-1.5 rounded-lg bg-white border border-stone-300 text-stone-700 hover:bg-stone-100 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                    title="Download translations.md file"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download .md</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Live Scanner Metrics */}
+              {coverageReport && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                  <div className="p-3 bg-white rounded-lg border border-stone-200">
+                    <span className="text-[11px] text-stone-500 font-mono block">Website Strings</span>
+                    <span className="text-lg font-bold text-stone-900">{coverageReport.totalStrings}</span>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg border border-stone-200">
+                    <span className="text-[11px] text-stone-500 font-mono block">Indexed in MD</span>
+                    <span className="text-lg font-bold text-emerald-700">{coverageReport.coveredStrings}</span>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg border border-stone-200">
+                    <span className="text-[11px] text-stone-500 font-mono block">Coverage</span>
+                    <span className="text-lg font-bold text-[#8c7355]">{coverageReport.coveragePercentage}%</span>
+                  </div>
+                  <div className="p-3 bg-white rounded-lg border border-stone-200">
+                    <span className="text-[11px] text-stone-500 font-mono block">Missing Strings</span>
+                    <span className={`text-lg font-bold ${coverageReport.missingStrings.length > 0 ? 'text-amber-700' : 'text-emerald-700'}`}>
+                      {coverageReport.missingStrings.length}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Feedback / Alert */}
+              {coverageFeedback && (
+                <div className="flex items-center gap-2 text-xs text-stone-700 bg-white p-2.5 rounded-lg border border-stone-200">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{coverageFeedback}</span>
+                </div>
+              )}
+
+              {/* Missing Strings Action Bar */}
+              {coverageReport && coverageReport.missingStrings.length > 0 && (
+                <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <span className="text-xs text-amber-900 font-medium">
+                      ⚠️ {coverageReport.missingStrings.length} newly added website text(s) are not yet in translations.md.
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setShowMissingList(!showMissingList)}
+                        className="text-xs text-amber-800 underline font-semibold cursor-pointer"
+                      >
+                        {showMissingList ? 'Hide details' : 'View missing text'}
+                      </button>
+                      <button
+                        id="admin-auto-add-missing-strings-btn"
+                        onClick={handleAutoAddMissingStrings}
+                        className="px-3 py-1 bg-amber-900 hover:bg-amber-800 text-white rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Auto-Add Missing to translations.md</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {showMissingList && (
+                    <div className="max-h-40 overflow-y-auto space-y-1 pt-2 border-t border-amber-200/60 font-mono text-[11px]">
+                      {coverageReport.missingStrings.map((str, idx) => (
+                        <div key={idx} className="bg-white/80 px-2 py-1 rounded border border-amber-200 text-amber-950 flex items-center justify-between">
+                          <span className="truncate max-w-md">{str}</span>
+                          <button
+                            onClick={() => {
+                              addMissingStringsToMd([str]);
+                              runCoverageScan();
+                            }}
+                            className="text-[10px] px-2 py-0.5 bg-amber-800 text-white rounded hover:bg-amber-700 ml-2 shrink-0 cursor-pointer"
+                          >
+                            + Add
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Architectural Guide */}
+              <div className="p-3 rounded-lg bg-stone-100/70 border border-stone-200 text-stone-600 text-[11px] leading-relaxed space-y-1">
+                <p>
+                  <strong>⚡ How translations update:</strong> Changes made in the editor or via <em>Auto-Add</em> update the local in-memory dictionary instantly (0ms lag, no API needed).
+                </p>
+                <p>
+                  <strong>🔄 Adding new website text:</strong> Whenever you add new products or content, click <em>Scan Website Strings</em>. Any new text can be added to <code className="font-mono text-stone-800">translations.md</code> with 1 click!
+                </p>
               </div>
             </div>
 

@@ -6,7 +6,6 @@ import {
   Menu,
   X,
   ArrowRight,
-  FileText,
 } from 'lucide-react';
 import { useCommerce } from '../context/CommerceContext';
 import { BasketCartIcon } from './BasketCartIcon';
@@ -32,7 +31,6 @@ export const Navbar: React.FC = () => {
     setSelectedProductModal,
     clearFilters,
     t,
-    setIsTranslationMdModalOpen,
   } = useCommerce();
 
   const [shoesDropdownOpen, setShoesDropdownOpen] = useState(false);
@@ -322,21 +320,6 @@ export const Navbar: React.FC = () => {
                         </button>
                       );
                     })}
-                  </div>
-
-                  {/* Offline translations.md Manager Trigger */}
-                  <div className="mt-2 pt-2 border-t border-stone-100">
-                    <button
-                      id="navbar-translations-md-btn"
-                      onClick={() => {
-                        setIsTranslationMdModalOpen(true);
-                        setLanguageDropdownOpen(false);
-                      }}
-                      className="w-full flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg btn-champagne-secondary text-xs font-semibold tracking-wide cursor-pointer shadow-2xs"
-                    >
-                      <FileText className="w-3.5 h-3.5 text-[#8c7355]" />
-                      <span>{t('translations_md_btn', 'translations.md Dictionary')}</span>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -770,7 +753,7 @@ export const Navbar: React.FC = () => {
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-5 border-t border-stone-200 space-y-2.5 bg-[#faf7f2]">
+            <div className="p-5 border-t border-stone-200 bg-[#faf7f2]">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
@@ -780,17 +763,6 @@ export const Navbar: React.FC = () => {
               >
                 <Globe className="w-4 h-4 text-[#8c7355]" />
                 <span>{activeLanguage.name}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setIsTranslationMdModalOpen(true);
-                }}
-                className="w-full py-2 px-4 rounded-xl btn-champagne-secondary font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
-              >
-                <FileText className="w-3.5 h-3.5 text-[#8c7355]" />
-                <span>{t('translations_md_btn', 'translations.md Dictionary')}</span>
               </button>
             </div>
           </div>

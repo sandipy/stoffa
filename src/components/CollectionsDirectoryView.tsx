@@ -129,13 +129,6 @@ export const CollectionsDirectoryView: React.FC<CollectionsDirectoryViewProps> =
               {/* Ambient lighting vignette for rich photographic depth and text readability */}
               <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/35 to-black/10 pointer-events-none transition-opacity duration-300 group-hover:opacity-95" />
 
-              {/* Theme Tag Badge at top-left: translucent luxury pill */}
-              <div className="absolute top-4 left-4 z-10">
-                <span className="inline-block px-3 py-1.5 rounded-md bg-black/40 backdrop-blur-md text-white text-[11px] font-bold uppercase tracking-[0.18em] border border-white/25 shadow-sm">
-                  {t(col.theme, col.theme)}
-                </span>
-              </div>
-
               {/* Text Overlay Box: Almost fully transparent glass overlay so the image below is clearly visible */}
               <div className="relative z-10 m-3 sm:m-4 bg-black/20 hover:bg-black/30 backdrop-blur-[2px] rounded-xl p-4 sm:p-5 border border-white/20 hover:border-white/35 transition-all duration-300 group-hover:-translate-y-1 shadow-2xl">
                 <div className="space-y-2.5">

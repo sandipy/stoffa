@@ -8,9 +8,19 @@
  */
 
 import bundledTranslationsMd from '../../translations.md?raw';
+import extractedStringsJson from '../../extracted_strings.json';
 
 export interface ParsedTranslations {
   [langCode: string]: Record<string, string>;
+}
+
+export interface WebsiteCoverageReport {
+  totalStrings: number;
+  coveredStrings: number;
+  missingStrings: string[];
+  coveragePercentage: number;
+  languagesCount: number;
+  lastScanned: string;
 }
 
 const STORAGE_KEY_MD = 'accessoire_translations_md_content_v7';
@@ -425,6 +435,119 @@ class TranslationMdService {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Scan website text to verify whether every string is recorded in translations.md
+   */
+  public scanWebsiteCoverage(additionalDynamicStrings: string[] = []): WebsiteCoverageReport {
+    const allCandidates = new Set<string>();
+
+    if (Array.isArray(extractedStringsJson)) {
+      for (const str of extractedStringsJson) {
+        if (typeof str === 'string' && str.trim()) {
+          allCandidates.add(str.trim());
+        }
+      }
+    }
+
+    for (const dyn of additionalDynamicStrings) {
+      if (typeof dyn === 'string' && dyn.trim() && dyn.length < 500) {
+        allCandidates.add(dyn.trim());
+      }
+    }
+
+    const enDict = this.translations['en'] || {};
+    const missing: string[] = [];
+    let coveredCount = 0;
+
+    for (const text of allCandidates) {
+      if (enDict[text] || this.hasTranslation(text, 'en')) {
+        coveredCount++;
+      } else {
+        missing.push(text);
+      }
+    }
+
+    const total = allCandidates.size;
+    const coveragePercentage = total > 0 ? Math.round((coveredCount / total) * 1000) / 10 : 100;
+
+    return {
+      totalStrings: total,
+      coveredStrings: coveredCount,
+      missingStrings: missing,
+      coveragePercentage,
+      languagesCount: Object.keys(this.translations).length,
+      lastScanned: new Date().toLocaleTimeString(),
+    };
+  }
+
+  /**
+   * Fast check whether a string has an entry or can be resolved
+   */
+  public hasTranslation(keyOrText: string, langCode: string = 'en'): boolean {
+    const dict = this.translations[langCode] || {};
+    if (dict[keyOrText]) return true;
+
+    const lower = keyOrText.trim().toLowerCase();
+    for (const [k, val] of Object.entries(dict)) {
+      if (k.toLowerCase() === lower || val.toLowerCase() === lower) {
+        return true;
+      }
+    }
+
+    const enDict = this.translations['en'] || {};
+    for (const [k, val] of Object.entries(enDict)) {
+      if (k.toLowerCase() === lower || val.toLowerCase() === lower) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Automatically append missing strings to translations.md for all active languages
+   */
+  public addMissingStringsToMd(newStrings: string[]): { addedCount: number } {
+    let count = 0;
+    const activeLangs = Object.keys(this.translations).length > 0
+      ? Object.keys(this.translations)
+      : ['en', 'fr', 'es', 'de', 'it', 'pt'];
+
+    for (const raw of newStrings) {
+      const trimmed = raw.trim();
+      if (!trimmed) continue;
+
+      let addedAny = false;
+      for (const lang of activeLangs) {
+        if (!this.translations[lang]) {
+          this.translations[lang] = {};
+        }
+        if (!this.translations[lang][trimmed]) {
+          // English gets exact text; other languages get exact text by default until translated
+          this.translations[lang][trimmed] = trimmed;
+          addedAny = true;
+        }
+      }
+
+      if (addedAny) count++;
+    }
+
+    if (count > 0) {
+      this.rawMarkdown = this.serializeToMarkdown();
+      try {
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem(STORAGE_KEY_MD, this.rawMarkdown);
+          window.localStorage.setItem(STORAGE_KEY_LAST_MODIFIED, new Date().toISOString());
+        }
+      } catch (e) {
+        console.warn('Failed saving updated translations.md cache:', e);
+      }
+      this.notifyListeners();
+    }
+
+    return { addedCount: count };
   }
 
   public getRawMarkdown(): string {
