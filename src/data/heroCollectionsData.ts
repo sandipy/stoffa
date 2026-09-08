@@ -28,7 +28,7 @@ import festiveBrunchImg from '../assets/images/festive_brunch_hero_1788745376178
 import blackModelHero from '../assets/images/black_model_hero_1788747095466.jpg';
 import asianModelHero from '../assets/images/asian_model_hero_1788747108983.jpg';
 import indianModelHero from '../assets/images/indian_model_hero_1788747121553.jpg';
-import { CURATED_COLLECTIONS_DATA } from './collectionsData';
+import { CURATED_COLLECTIONS_DATA, loadCuratedCollections } from './collectionsData';
 import resortHolidayImg from '../assets/images/resort_holiday_model_1788635741638.jpg';
 import editorialCocktailImg from '../assets/images/cocktail_soiree_hero_1788745390554.jpg';
 
@@ -754,7 +754,8 @@ export function getHeroSlideForCategory(categoryTitle: string): HeroCollectionSl
   const norm = (categoryTitle || '').toLowerCase().trim();
 
   // 1. Check if matching any of the 15 Curated Collections sub-menu items directly
-  const curatedMatch = CURATED_COLLECTIONS_DATA.find((c) => {
+  const activeCuratedList = loadCuratedCollections();
+  const curatedMatch = activeCuratedList.find((c) => {
     const cTitle = c.title.toLowerCase().trim();
     return cTitle === norm || norm.includes(cTitle) || cTitle.includes(norm);
   });
@@ -824,7 +825,7 @@ export function getHeroSlideForCategory(categoryTitle: string): HeroCollectionSl
   }
 
   // 3. Fallback: If no page exists, use sub menu in collections to create using 1 image
-  const defaultCurated = CURATED_COLLECTIONS_DATA[0];
+  const defaultCurated = activeCuratedList[0] || CURATED_COLLECTIONS_DATA[0];
   return {
     id: defaultCurated.id,
     categoryTarget: categoryTitle || defaultCurated.title,

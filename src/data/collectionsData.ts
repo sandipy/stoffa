@@ -163,3 +163,56 @@ export const CURATED_COLLECTIONS_DATA: CuratedCollectionItem[] = [
     image: dateNightImg,
   },
 ];
+
+export const STORAGE_KEY_COLLECTIONS = 'stoffa_curated_collections_v1';
+
+/**
+ * Loads curated collections from localStorage or falls back to factory defaults.
+ */
+export function loadCuratedCollections(): CuratedCollectionItem[] {
+  try {
+    if (typeof window === 'undefined') return CURATED_COLLECTIONS_DATA;
+    const raw = localStorage.getItem(STORAGE_KEY_COLLECTIONS);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load curated collections from storage:', err);
+  }
+  return CURATED_COLLECTIONS_DATA;
+}
+
+/**
+ * Saves updated curated collections to localStorage and notifies listeners.
+ */
+export function saveCuratedCollections(collections: CuratedCollectionItem[]): void {
+  try {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(STORAGE_KEY_COLLECTIONS, JSON.stringify(collections));
+    window.dispatchEvent(
+      new CustomEvent('stoffa_curated_collections_updated', { detail: collections })
+    );
+  } catch (err) {
+    console.error('Failed to save curated collections:', err);
+  }
+}
+
+/**
+ * Resets curated collections back to factory defaults and notifies listeners.
+ */
+export function resetCuratedCollections(): CuratedCollectionItem[] {
+  try {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY_COLLECTIONS);
+      window.dispatchEvent(
+        new CustomEvent('stoffa_curated_collections_updated', { detail: CURATED_COLLECTIONS_DATA })
+      );
+    }
+  } catch (err) {
+    console.error('Failed to reset curated collections:', err);
+  }
+  return CURATED_COLLECTIONS_DATA;
+}
