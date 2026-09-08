@@ -1,0 +1,6 @@
+{
+  "name": "Accesoire - Handcrafted Luxury Footwear & Wedges",
+  "description": "Handcrafted women's luxury wedges, block heels, flats, and artisanal bags exclusively priced in USD.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Raleway', sans-serif;
+  --font-serif: 'Raleway', sans-serif;
+  --font-mono: 'Raleway', sans-serif;
+}
+
+/* Strictly enforce Raleway on all elements across the entire app */
+*,
+*::before,
+*::after {
+  font-family: 'Raleway', sans-serif !important;
+}
+
+html,
+body {
+  font-family: 'Raleway', sans-serif !important;
+  font-size: 17px;
+  background-color: #ffffff;
+  color: #09090b;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings inherit font color so utility classes like text-white or inline styles work cleanly */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Raleway', sans-serif !important;
+  font-weight: 700;
+}
+
+p, span, li, a, div, label, button, input, select, textarea {
+  font-family: 'Raleway', sans-serif !important;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: 'Raleway', sans-serif !important;
+}
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+/* ==========================================================================
+   Champagne Ivory Luxury Button Design System
+   Handcrafted warm ivory, soft champagne sheen, rich bronze-espresso text
+   ========================================================================== */
+
+.btn-champagne-primary {
+  background: linear-gradient(135deg, #faf6ef 0%, #f4eee2 50%, #eae0cf 100%) !important;
+  color: #2b221a !important;
+  border: 1px solid #cbbca8 !important;
+  box-shadow: 0 1px 3px rgba(90, 70, 45, 0.08) !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.btn-champagne-primary:hover {
+  background: linear-gradient(135deg, #f5efe3 0%, #ece2d1 50%, #e1d3bf 100%) !important;
+  border-color: #baa58c !important;
+  color: #17110c !important;
+  box-shadow: 0 3px 8px rgba(90, 70, 45, 0.14) !important;
+}
+
+.btn-champagne-primary:active {
+  background: #deceb8 !important;
+  border-color: #9e8970 !important;
+  transform: scale(0.98);
+}
+
+.btn-champagne-added {
+  background: linear-gradient(135deg, #ede4d3 0%, #e2d5bf 100%) !important;
+  color: #1b140e !important;
+  border: 2px solid #8c7355 !important;
+  box-shadow: 0 0 0 2px rgba(140, 115, 85, 0.25) !important;
+}
+
+.btn-champagne-secondary {
+  background: #fdfbf7 !important;
+  color: #3b3026 !important;
+  border: 1px solid #ded4c5 !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.btn-champagne-secondary:hover {
+  background: #f5eee2 !important;
+  border-color: #c9bbaa !important;
+  color: #1a140f !important;
+}
+
+/* Size Pills & Buttons */
+.btn-champagne-size {
+  background: #faf7f2 !important;
+  color: #4a3d31 !important;
+  border: 1px solid #ded5c7 !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+.btn-champagne-size:hover {
+  background: #f3ecdf !important;
+  border-color: #baa891 !important;
+  color: #1f1812 !important;
+}
+
+.btn-champagne-size-selected,
+.btn-champagne-size.selected {
+  background: linear-gradient(135deg, #ebe0ce 0%, #e0d2bc 100%) !important;
+  color: #17110b !important;
+  border: 2px solid #8c7355 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 4px rgba(140, 115, 85, 0.25) !important;
+}
+
+/* Category Filter Pills */
+.btn-champagne-pill {
+  background: #fbf9f5 !important;
+  color: #4f4336 !important;
+  border: 1px solid #e2d8ca !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+.btn-champagne-pill:hover {
+  background: #f3ecdf !important;
+  border-color: #baa891 !important;
+  color: #17110b !important;
+}
+
+.btn-champagne-pill-active {
+  background: linear-gradient(135deg, #ede4d3 0%, #e3d5be 100%) !important;
+  color: #1a130c !important;
+  border: 1.5px solid #8c7355 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 3px rgba(140, 115, 85, 0.18) !important;
+}
+
+

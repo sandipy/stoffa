@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1720" width="100%" height="100%" style="background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <polygon points="0 0, 8 4, 0 8" fill="#e91e63" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="52" font-size="24" font-weight="800" text-anchor="middle" letter-spacing="2" fill="#111827">SIZE GUIDE</text>
+
+  <!-- TABLE 1 -->
+  <g transform="translate(70, 85)">
+    <!-- Outer Table Box -->
+    <rect x="0" y="0" width="660" height="390" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" />
+
+    <!-- Table Header Background -->
+    <rect x="0" y="0" width="660" height="55" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" />
+
+    <!-- Vertical Column Dividers -->
+    <line x1="120" y1="0" x2="120" y2="390" stroke="#d1d5db" stroke-width="1.5" />
+    <line x1="240" y1="0" x2="240" y2="390" stroke="#d1d5db" stroke-width="1.5" />
+    <line x1="360" y1="0" x2="360" y2="390" stroke="#d1d5db" stroke-width="1.5" />
+    <line x1="490" y1="0" x2="490" y2="390" stroke="#d1d5db" stroke-width="1.5" />
+
+    <!-- Headers -->
+    <text x="60" y="34" font-size="14" font-weight="800" text-anchor="middle" fill="#111827">UK</text>
+    <text x="180" y="34" font-size="14" font-weight="800" text-anchor="middle" fill="#111827">US</text>
+    <text x="300" y="34" font-size="14" font-weight="800" text-anchor="middle" fill="#111827">EU</text>
+    <text x="425" y="34" font-size="14" font-weight="800" text-anchor="middle" fill="#111827">STOFFA</text>
+    <text x="575" y="26" font-size="13" font-weight="800" text-anchor="middle" fill="#111827">LENGTH</text>
+    <text x="575" y="43" font-size="12" font-weight="700" text-anchor="middle" fill="#374151">(Foot)</text>
+
+    <!-- Horizontal Row Dividers & Data Rows -->
+    
+        <line x1="0" y1="55" x2="660" y2="55" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="81" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">2</text>
+        <text x="180" y="81" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">4</text>
+        <text x="300" y="81" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">35</text>
+        <text x="425" y="81" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">35</text>
+        <text x="575" y="81" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">21.5 - 22.25 cm</text>
+      
+        <line x1="0" y1="96.875" x2="660" y2="96.875" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="122.875" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">3</text>
+        <text x="180" y="122.875" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">5</text>
+        <text x="300" y="122.875" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">36</text>
+        <text x="425" y="122.875" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">36</text>
+        <text x="575" y="122.875" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">22.25 - 23 cm</text>
+      
+        <line x1="0" y1="138.75" x2="660" y2="138.75" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="164.75" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">4</text>
+        <text x="180" y="164.75" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">6</text>
+        <text x="300" y="164.75" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">37</text>
+        <text x="425" y="164.75" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">37</text>
+        <text x="575" y="164.75" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">23 - 23.75 cm</text>
+      
+        <line x1="0" y1="180.625" x2="660" y2="180.625" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="206.625" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">5</text>
+        <text x="180" y="206.625" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">7</text>
+        <text x="300" y="206.625" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">38</text>
+        <text x="425" y="206.625" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">38</text>
+        <text x="575" y="206.625" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">23.75 - 24.5 cm</text>
+      
+        <line x1="0" y1="222.5" x2="660" y2="222.5" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="248.5" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">6</text>
+        <text x="180" y="248.5" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">8</text>
+        <text x="300" y="248.5" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">39</text>
+        <text x="425" y="248.5" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">39</text>
+        <text x="575" y="248.5" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">24.5 - 25.25 cm</text>
+      
+        <line x1="0" y1="264.375" x2="660" y2="264.375" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="290.375" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">7</text>
+        <text x="180" y="290.375" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">9</text>
+        <text x="300" y="290.375" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">40</text>
+        <text x="425" y="290.375" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">40</text>
+        <text x="575" y="290.375" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">25.25 - 26 cm</text>
+      
+        <line x1="0" y1="306.25" x2="660" y2="306.25" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="332.25" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">8</text>
+        <text x="180" y="332.25" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">10</text>
+        <text x="300" y="332.25" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">41</text>
+        <text x="425" y="332.25" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">41</text>
+        <text x="575" y="332.25" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">26 - 26.75 cm</text>
+      
+        <line x1="0" y1="348.125" x2="660" y2="348.125" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="374.125" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">9</text>
+        <text x="180" y="374.125" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">11</text>
+        <text x="300" y="374.125" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">42</text>
+        <text x="425" y="374.125" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">42</text>
+        <text x="575" y="374.125" font-size="13" font-weight="500" text-anchor="middle" fill="#1f2937">26.75 - 27.5 cm</text>
+      
+  </g>
+
+  <!-- SECTION 2: HOW TO MEASURE -->
+  <text x="400" y="535" font-size="17" font-weight="800" text-anchor="middle" letter-spacing="0.5" fill="#111827">HOW TO MEASURE YOUR SIZE FOR THE PERFECT FIT:</text>
+
+  <!-- DIAGRAM AREA -->
+  <g transform="translate(150, 560)">
+    <!-- Left Sandal: Thong Style -->
+    <g transform="translate(20, 10)">
+      <!-- Footbed Outline -->
+      <path d="M 75 10 C 110 10 120 40 120 80 C 120 130 115 160 110 200 C 105 240 95 260 75 260 C 55 260 45 240 40 200 C 35 160 30 130 30 80 C 30 40 40 10 75 10 Z" fill="none" stroke="#111827" stroke-width="2" />
+      <!-- Inner Sole detail -->
+      <path d="M 75 16 C 104 16 114 43 114 80 C 114 128 109 158 104 198 C 99 236 90 254 75 254 C 60 254 51 236 46 198 C 41 158 36 128 36 80 C 36 43 46 16 75 16 Z" fill="none" stroke="#e5e7eb" stroke-width="1.5" />
+
+      <!-- Toe Post Strap Ring -->
+      <circle cx="68" cy="55" r="8" fill="none" stroke="#111827" stroke-width="2" />
+      <path d="M 68 63 L 68 95 L 34 115" fill="none" stroke="#111827" stroke-width="2" />
+      <path d="M 68 95 L 116 115" fill="none" stroke="#111827" stroke-width="2" />
+      <ellipse cx="75" cy="48" rx="16" ry="8" fill="none" stroke="#111827" stroke-width="1.5" />
+
+      <!-- Pink Measurement Line & Labels -->
+      <line x1="68" y1="20" x2="68" y2="250" stroke="#e91e63" stroke-width="2.5" stroke-dasharray="5,4" />
+
+      <!-- START badge -->
+      <rect x="-25" y="28" width="56" height="22" rx="4" fill="#e91e63" />
+      <text x="3" y="44" font-size="11" font-weight="800" text-anchor="middle" fill="#ffffff">START</text>
+      <!-- END badge -->
+      <rect x="-12" y="240" width="46" height="22" rx="4" fill="#e91e63" />
+      <text x="11" y="256" font-size="11" font-weight="800" text-anchor="middle" fill="#ffffff">END</text>
+    </g>
+
+    <!-- Right Sandal: Slide Style -->
+    <g transform="translate(290, 10)">
+      <!-- Footbed Outline -->
+      <path d="M 75 10 C 110 10 120 40 120 80 C 120 130 115 160 110 200 C 105 240 95 260 75 260 C 55 260 45 240 40 200 C 35 160 30 130 30 80 C 30 40 40 10 75 10 Z" fill="none" stroke="#111827" stroke-width="2" />
+      <path d="M 75 16 C 104 16 114 43 114 80 C 114 128 109 158 104 198 C 99 236 90 254 75 254 C 60 254 51 236 46 198 C 41 158 36 128 36 80 C 36 43 46 16 75 16 Z" fill="none" stroke="#e5e7eb" stroke-width="1.5" />
+
+      <!-- Wide Slide Strap Band -->
+      <path d="M 32 65 C 50 60 100 60 118 65 L 115 110 C 95 105 55 105 35 110 Z" fill="#ffffff" stroke="#111827" stroke-width="2" />
+
+      <!-- Pink Measurement Line & Labels -->
+      <line x1="115" y1="16" x2="115" y2="250" stroke="#e91e63" stroke-width="2.5" stroke-dasharray="5,4" />
+
+      <!-- START badge on right -->
+      <rect x="120" y="10" width="56" height="22" rx="4" fill="#e91e63" />
+      <text x="148" y="26" font-size="11" font-weight="800" text-anchor="middle" fill="#ffffff">START</text>
+
+      <!-- END badge on right -->
+      <rect x="120" y="240" width="46" height="22" rx="4" fill="#e91e63" />
+      <text x="143" y="256" font-size="11" font-weight="800" text-anchor="middle" fill="#ffffff">END</text>
+    </g>
+
+    <!-- Curved Downward Pink Guide Arrows -->
+    <path d="M 65 275 C 30 305 25 350 70 380" fill="none" stroke="#e91e63" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowhead)" />
+    <path d="M 420 275 C 460 305 465 350 410 380" fill="none" stroke="#e91e63" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowhead)" />
+  </g>
+
+  <!-- TABLE 2 (MEASUREMENTS WITH HOT-PINK HIGHLIGHT) -->
+  <g transform="translate(90, 970)">
+    <!-- Outer Box -->
+    <rect x="0" y="0" width="620" height="690" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" />
+
+    <!-- Pink Column Highlight for STOFFA (x=200, width=120) -->
+    <rect x="245" y="0" width="130" height="690" fill="#e91e63" />
+
+    <!-- Headers -->
+    <rect x="0" y="0" width="620" height="60" fill="none" stroke="#d1d5db" stroke-width="1.5" />
+    <text x="60" y="37" font-size="14" font-weight="800" text-anchor="middle" fill="#111827">CM</text>
+    <text x="180" y="37" font-size="14" font-weight="800" text-anchor="middle" fill="#111827">INCH</text>
+    <text x="310" y="37" font-size="15" font-weight="900" text-anchor="middle" fill="#ffffff" letter-spacing="1">STOFFA</text>
+    <text x="440" y="37" font-size="14" font-weight="800" text-anchor="middle" fill="#111827">CM</text>
+    <text x="555" y="37" font-size="14" font-weight="800" text-anchor="middle" fill="#111827">INCH</text>
+
+    <!-- Vertical Lines for columns -->
+    <line x1="120" y1="0" x2="120" y2="690" stroke="#d1d5db" stroke-width="1.5" />
+    <line x1="245" y1="0" x2="245" y2="690" stroke="#d1d5db" stroke-width="1.5" />
+    <line x1="375" y1="0" x2="375" y2="690" stroke="#d1d5db" stroke-width="1.5" />
+    <line x1="495" y1="0" x2="495" y2="690" stroke="#d1d5db" stroke-width="1.5" />
+
+    <!-- 10 Data Rows -->
+    
+        <line x1="0" y1="60" x2="620" y2="60" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="98" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">18</text>
+        <text x="180" y="98" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">7</text>
+        <text x="310" y="98" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">35</text>
+        <text x="440" y="98" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">23</text>
+        <text x="555" y="98" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">9</text>
+      
+        <line x1="0" y1="123" x2="620" y2="123" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="161" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">18.75</text>
+        <text x="180" y="161" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">7 1/4</text>
+        <text x="310" y="161" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">36</text>
+        <text x="440" y="161" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">23.75</text>
+        <text x="555" y="161" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">9.4</text>
+      
+        <line x1="0" y1="186" x2="620" y2="186" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="224" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">19.25</text>
+        <text x="180" y="224" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">7 1/2</text>
+        <text x="310" y="224" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">37</text>
+        <text x="440" y="224" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">24.75</text>
+        <text x="555" y="224" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">9.7</text>
+      
+        <line x1="0" y1="249" x2="620" y2="249" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="287" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">20</text>
+        <text x="180" y="287" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">7 3/4</text>
+        <text x="310" y="287" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">38</text>
+        <text x="440" y="287" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">25.5</text>
+        <text x="555" y="287" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">10</text>
+      
+        <line x1="0" y1="312" x2="620" y2="312" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="350" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">20.5</text>
+        <text x="180" y="350" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">8</text>
+        <text x="310" y="350" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">39</text>
+        <text x="440" y="350" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">26</text>
+        <text x="555" y="350" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">10 1/4</text>
+      
+        <line x1="0" y1="375" x2="620" y2="375" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="413" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">21.25</text>
+        <text x="180" y="413" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">8 1/4</text>
+        <text x="310" y="413" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">40</text>
+        <text x="440" y="413" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">26.75</text>
+        <text x="555" y="413" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">10.5</text>
+      
+        <line x1="0" y1="438" x2="620" y2="438" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="476" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">22</text>
+        <text x="180" y="476" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">8 1/2</text>
+        <text x="310" y="476" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">41</text>
+        <text x="440" y="476" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">27.5</text>
+        <text x="555" y="476" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">10 3/4</text>
+      
+        <line x1="0" y1="501" x2="620" y2="501" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="539" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">22.5</text>
+        <text x="180" y="539" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">8 3/4</text>
+        <text x="310" y="539" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">42</text>
+        <text x="440" y="539" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">28</text>
+        <text x="555" y="539" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">11</text>
+      
+        <line x1="0" y1="564" x2="620" y2="564" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="602" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">23.25</text>
+        <text x="180" y="602" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">9</text>
+        <text x="310" y="602" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">43</text>
+        <text x="440" y="602" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">29</text>
+        <text x="555" y="602" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">11.25</text>
+      
+        <line x1="0" y1="627" x2="620" y2="627" stroke="#e5e7eb" stroke-width="1" />
+        <text x="60" y="665" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">23.75</text>
+        <text x="180" y="665" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">9 1/4</text>
+        <text x="310" y="665" font-size="16" font-weight="800" text-anchor="middle" fill="#ffffff">44</text>
+        <text x="440" y="665" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">29.5</text>
+        <text x="555" y="665" font-size="14" font-weight="500" text-anchor="middle" fill="#1f2937">11.5</text>
+      
+  </g>
+</svg>
