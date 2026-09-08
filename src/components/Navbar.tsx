@@ -380,7 +380,7 @@ export const Navbar: React.FC = () => {
                     : 'text-stone-900 hover:text-stone-950'
                 }`}
               >
-                <span>{t('nav_just_in')}</span>
+                <span>{t('Just In', 'Just In')}</span>
                 {/* Walker & Wade Underline Movement */}
                 <span
                   className={`absolute bottom-0 left-0 h-[2.5px] bg-stone-950 transition-all duration-300 ease-out ${
@@ -408,7 +408,7 @@ export const Navbar: React.FC = () => {
                     : 'text-stone-900 hover:text-stone-950'
                 }`}
               >
-                <span>{t('nav_shoes')}</span>
+                <span>{t('Shoes', 'Shoes')}</span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform duration-200 ${
                     shoesDropdownOpen ? 'rotate-180 text-stone-950' : 'text-stone-600'
@@ -480,7 +480,7 @@ export const Navbar: React.FC = () => {
                     : 'text-stone-900 hover:text-stone-950'
                 }`}
               >
-                <span>{t('nav_bags')}</span>
+                <span>{t('Bags', 'Bags')}</span>
                 {/* Walker & Wade Underline Movement */}
                 <span
                   className={`absolute bottom-0 left-0 h-[2.5px] bg-stone-950 transition-all duration-300 ease-out ${
@@ -508,7 +508,7 @@ export const Navbar: React.FC = () => {
                     : 'text-stone-900 hover:text-stone-950'
                 }`}
               >
-                <span>{t('nav_collections')}</span>
+                <span>{t('Collections', 'Collections')}</span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform duration-200 ${
                     collectionsDropdownOpen ? 'rotate-180 text-stone-950' : 'text-stone-600'
@@ -575,7 +575,7 @@ export const Navbar: React.FC = () => {
                     : 'text-rose-700 hover:text-rose-900'
                 }`}
               >
-                <span className="text-rose-700">{t('nav_sale')}</span>
+                <span className="text-rose-700">{t('Sale', 'Sale')}</span>
                 {/* Walker & Wade Underline Movement */}
                 <span
                   className={`absolute bottom-0 left-0 h-[2.5px] bg-rose-700 transition-all duration-300 ease-out ${
@@ -599,7 +599,7 @@ export const Navbar: React.FC = () => {
                     : 'text-stone-900 hover:text-stone-950'
                 }`}
               >
-                <span>{t('nav_ready_to_ship')}</span>
+                <span>{t('Ready to Ship', 'Ready to Ship')}</span>
                 {/* Walker & Wade Underline Movement */}
                 <span
                   className={`absolute bottom-0 left-0 h-[2.5px] bg-stone-950 transition-all duration-300 ease-out ${
@@ -657,7 +657,7 @@ export const Navbar: React.FC = () => {
                 onClick={(e) => handleSelectNav('Just In', e)}
                 className="w-full text-left py-2 text-lg font-bold uppercase tracking-[0.14em] text-stone-900 border-b border-stone-100 block"
               >
-                {t('nav_just_in')}
+                {t('Just In', 'Just In')}
               </a>
 
               {/* SHOES ACCORDION */}
@@ -666,7 +666,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => setMobileShoesExpanded(!mobileShoesExpanded)}
                   className="w-full py-2 text-lg font-bold uppercase tracking-[0.14em] text-stone-900 flex items-center justify-between border-b border-stone-100"
                 >
-                  <span>{t('nav_shoes')}</span>
+                  <span>{t('Shoes', 'Shoes')}</span>
                   <ChevronDown
                     className={`w-5 h-5 transition-transform ${
                       mobileShoesExpanded ? 'rotate-180' : ''
@@ -702,7 +702,7 @@ export const Navbar: React.FC = () => {
                 onClick={(e) => handleSelectNav('Bags', e)}
                 className="w-full text-left py-2 text-lg font-bold uppercase tracking-[0.14em] text-stone-900 border-b border-stone-100 block"
               >
-                {t('nav_bags')}
+                {t('Bags', 'Bags')}
               </a>
 
               {/* COLLECTIONS ACCORDION */}
@@ -711,7 +711,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => setMobileCollectionsExpanded(!mobileCollectionsExpanded)}
                   className="w-full py-2 text-lg font-bold uppercase tracking-[0.14em] text-stone-900 flex items-center justify-between border-b border-stone-100"
                 >
-                  <span>{t('nav_collections')}</span>
+                  <span>{t('Collections', 'Collections')}</span>
                   <ChevronDown
                     className={`w-5 h-5 transition-transform ${
                       mobileCollectionsExpanded ? 'rotate-180' : ''
@@ -756,7 +756,7 @@ export const Navbar: React.FC = () => {
                 onClick={(e) => handleSelectNav('Sale', e)}
                 className="w-full text-left py-2 text-lg font-bold uppercase tracking-[0.14em] text-rose-700 border-b border-stone-100 block"
               >
-                {t('nav_sale')}
+                {t('Sale', 'Sale')}
               </a>
 
               {/* READY TO SHIP */}
@@ -765,7 +765,7 @@ export const Navbar: React.FC = () => {
                 onClick={(e) => handleSelectNav('Ready to Ship', e)}
                 className="w-full text-left py-2 text-lg font-bold uppercase tracking-[0.14em] text-stone-900 border-b border-stone-100 block"
               >
-                {t('nav_ready_to_ship')}
+                {t('Ready to Ship', 'Ready to Ship')}
               </a>
             </div>
 

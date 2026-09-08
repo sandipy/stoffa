@@ -1059,42 +1059,59 @@ export function translateWebsiteText(
 ): string {
   if (!keyOrText) return fallback || '';
 
+  const cleanNavKey = (s: string) => {
+    if (s && s.startsWith('nav_')) {
+      const withoutPrefix = s.replace(/^nav_/, '').replace(/_/g, ' ');
+      return withoutPrefix.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }
+    return s;
+  };
+
+  const humanKey = cleanNavKey(keyOrText);
+
   // 0. Query Offline Markdown Translation Engine first (loads directly from translations.md)
-  const mdTranslated = translationMdService.t(keyOrText, langCode, '');
-  if (mdTranslated && mdTranslated !== keyOrText) {
-    return mdTranslated;
+  const mdTranslated = translationMdService.t(humanKey, langCode, '');
+  if (mdTranslated && mdTranslated !== humanKey && mdTranslated !== keyOrText) {
+    return cleanNavKey(mdTranslated);
   }
 
   if (langCode === 'en') {
     // If it's a key in en, return the English text
     if (COMPLETE_TRANSLATIONS.en[keyOrText]) {
-      return COMPLETE_TRANSLATIONS.en[keyOrText];
+      return cleanNavKey(COMPLETE_TRANSLATIONS.en[keyOrText]);
     }
-    return fallback || keyOrText;
+    if (COMPLETE_TRANSLATIONS.en[humanKey]) {
+      return cleanNavKey(COMPLETE_TRANSLATIONS.en[humanKey]);
+    }
+    return cleanNavKey(fallback || humanKey);
   }
 
   const dict = COMPLETE_TRANSLATIONS[langCode] || COMPLETE_TRANSLATIONS.en;
+  const enDict = COMPLETE_TRANSLATIONS.en;
 
-  // 1. Direct key match (e.g. 'nav_just_in' or 'Select Language')
+  // 1. Direct key match (e.g. 'Just In' or 'Select Language')
   if (dict[keyOrText]) {
-    return dict[keyOrText];
+    return cleanNavKey(dict[keyOrText]);
+  }
+  if (dict[humanKey]) {
+    return cleanNavKey(dict[humanKey]);
   }
 
-  const enDict = COMPLETE_TRANSLATIONS.en;
   const trimmed = keyOrText.trim();
   const lower = trimmed.toLowerCase();
+  const humanLower = humanKey.toLowerCase();
 
   // 2. Case-insensitive key match in target dictionary
   for (const [k, val] of Object.entries(dict)) {
-    if (k.toLowerCase() === lower) {
-      return val;
+    if (k.toLowerCase() === lower || k.toLowerCase() === humanLower) {
+      return cleanNavKey(val);
     }
   }
 
-  // 3. Search key where English translation or key matches keyOrText
+  // 3. Search key where English translation or key matches keyOrText or humanKey
   for (const [k, val] of Object.entries(enDict)) {
-    if (val.toLowerCase() === lower || k.toLowerCase() === lower) {
-      if (dict[k]) return dict[k];
+    if (val.toLowerCase() === lower || val.toLowerCase() === humanLower || k.toLowerCase() === lower || k.toLowerCase() === humanLower) {
+      if (dict[k]) return cleanNavKey(dict[k]);
     }
   }
 
@@ -1105,20 +1122,20 @@ export function translateWebsiteText(
       .replace(/[\u2022•\-_,;:'"✦]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
-  const normKey = normalize(keyOrText);
+  const normKey = normalize(humanKey);
   if (normKey) {
     for (const [k, val] of Object.entries(dict)) {
       if (normalize(k) === normKey) {
-        return val;
+        return cleanNavKey(val);
       }
     }
     for (const [k, val] of Object.entries(enDict)) {
       if (normalize(k) === normKey || normalize(val) === normKey) {
-        if (dict[k]) return dict[k];
+        if (dict[k]) return cleanNavKey(dict[k]);
       }
     }
   }
 
   // Fallback to English dict or provided fallback or original
-  return enDict[keyOrText] || fallback || keyOrText;
+  return cleanNavKey(enDict[keyOrText] || enDict[humanKey] || fallback || humanKey);
 }

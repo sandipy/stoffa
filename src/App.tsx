@@ -47,23 +47,17 @@ const StorefrontContent: React.FC = () => {
     <div className="bg-[#faf9f6]">
       {/* If viewing the 15 Collections Directory 1-Page 3-Column View */}
       {isCollectionsDirectory ? (
-        <div className="space-y-12 pb-16">
+        <div className="pb-16">
           <CollectionsDirectoryView
             onSelectCollection={(col) => setSelectedCategory(col)}
           />
-          <FadeInSection direction="up" threshold={0.1}>
-            <EdgeToEdgeNewArrivals />
-          </FadeInSection>
         </div>
       ) : isCategoryFiltered ? (
-        /* If category is active, show the focused Category Collection View right at top */
-        <div className="space-y-12 pb-16">
+        /* If category is active, show the focused Category Collection View cleanly */
+        <div className="pb-16">
           <CategoryCollectionSection
             categoryTitle={selectedCategory}
           />
-          <FadeInSection direction="up" threshold={0.1}>
-            <EdgeToEdgeNewArrivals />
-          </FadeInSection>
         </div>
       ) : (
         /* Homepage Layout Matching User's Exact Requested Structure */

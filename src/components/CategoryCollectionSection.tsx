@@ -6,7 +6,7 @@ import {
   Check,
   Camera,
 } from 'lucide-react';
-import { useCommerce } from '../context/CommerceContext';
+import { useCommerce, deduplicateProducts } from '../context/CommerceContext';
 import { Product } from '../types';
 import { getHeroSlideForCategory } from '../data/heroCollectionsData';
 import { getEffectivePageHero } from '../data/pageHeroManager';
@@ -531,8 +531,9 @@ export const CategoryCollectionSection: React.FC<CategoryCollectionSectionProps>
     return 'Handcrafted luxury footwear & accessories • Exclusively priced in USD';
   };
 
-  // Fallback to all if matching filtered empty
-  const baseList = matchingProducts.length > 0 ? matchingProducts : products;
+  // Fallback to all if matching filtered empty, with deduplication
+  const rawBaseList = matchingProducts.length > 0 ? matchingProducts : products;
+  const baseList = deduplicateProducts(rawBaseList);
 
   // Apply Heel Height filter
   let displayProducts = baseList;
@@ -796,7 +797,7 @@ export const CategoryCollectionSection: React.FC<CategoryCollectionSectionProps>
                   {/* Product Metadata formatted with bigger and darker fonts */}
                   <div className="pt-3.5 pb-2">
                     {/* Title in Uppercase tracking format: e.g. CLASSIC HIGH K WEDGE / INK */}
-                    <div className="text-sm sm:text-base md:text-lg text-stone-950 tracking-[0.06em] uppercase font-bold line-clamp-1 group-hover:text-amber-950 transition-colors">
+                    <div className="text-sm sm:text-base md:text-lg text-stone-950 tracking-[0.06em] uppercase font-bold line-clamp-2 leading-snug break-words group-hover:text-amber-950 transition-colors">
                       {t(displayTitle.mainTitle, displayTitle.mainTitle)} {displayTitle.colorTitle ? `/ ${t(displayTitle.colorTitle, displayTitle.colorTitle)}` : ''}
                     </div>
 

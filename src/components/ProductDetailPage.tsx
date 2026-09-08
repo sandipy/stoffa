@@ -9,11 +9,11 @@ import {
   ShoppingBag,
   ZoomIn,
   ZoomOut,
-  Maximize2,
 } from 'lucide-react';
 import { useCommerce } from '../context/CommerceContext';
 import { useCms } from '../context/CmsContext';
 import { AdminProductEditorModal } from './AdminProductEditorModal';
+import { getShoeColorTheme } from '../utils/shoeColorTheme';
 
 export const ProductDetailPage: React.FC = () => {
   const {
@@ -32,8 +32,6 @@ export const ProductDetailPage: React.FC = () => {
 
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [zoomScale, setZoomScale] = useState<number>(1);
-  const [isZoomLensActive, setIsZoomLensActive] = useState(false);
-  const [lensPos, setLensPos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
   if (!selectedProductModal) return null;
@@ -57,6 +55,9 @@ export const ProductDetailPage: React.FC = () => {
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<'details' | 'materials' | 'craftsmanship'>('details');
 
+  // Dynamic theme matching the shoe color on the left
+  const shoeTheme = getShoeColorTheme(selectedColor?.name, selectedColor?.hex, product.title);
+
   const rawAngles =
     product.angles && product.angles.length > 0
       ? product.angles
@@ -79,16 +80,7 @@ export const ProductDetailPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     setZoomScale(1);
-    setIsZoomLensActive(false);
   }, [product.id]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!imageContainerRef.current) return;
-    const rect = imageContainerRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setLensPos({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
-  };
 
   return (
     <div className="w-full bg-[#faf9f6] min-h-screen pb-20">
@@ -134,9 +126,10 @@ export const ProductDetailPage: React.FC = () => {
                     }}
                     className={`relative w-16 h-20 sm:w-20 sm:h-24 md:w-24 md:h-28 shrink-0 rounded-xl overflow-hidden border-2 transition-all cursor-pointer bg-[#faf8f5] p-1.5 flex items-center justify-center ${
                       selectedAngleIndex === idx
-                        ? 'border-stone-950 shadow-md ring-2 ring-stone-950/20'
+                        ? 'shadow-md'
                         : 'border-stone-200 opacity-70 hover:opacity-100 hover:border-stone-400'
                     }`}
+                    style={selectedAngleIndex === idx ? { borderColor: shoeTheme.accentBorder, boxShadow: `0 0 0 2px ${shoeTheme.accentBorder}40` } : undefined}
                     title={ang.label || `View ${idx + 1}`}
                   >
                     <img
@@ -154,20 +147,6 @@ export const ProductDetailPage: React.FC = () => {
             <div className="relative flex-1 w-full min-h-[560px] sm:min-h-[680px] lg:min-h-[780px] bg-[#fbf9f6] rounded-2xl overflow-hidden border border-stone-200/90 shadow-sm flex flex-col">
               {/* Zoom Controls Overlay */}
               <div className="absolute top-4 end-4 z-10 flex items-center gap-2 bg-white/90 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-stone-200 shadow-xs">
-                <button
-                  type="button"
-                  onClick={() => setIsZoomLensActive(!isZoomLensActive)}
-                  className={`p-1.5 rounded-lg text-xs font-mono flex items-center gap-1 transition-colors cursor-pointer ${
-                    isZoomLensActive ? 'btn-champagne-pill-active font-bold' : 'btn-champagne-pill'
-                  }`}
-                  title="Toggle Lens Magnifier"
-                >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">{isZoomLensActive ? 'Lens On' : 'Lens'}</span>
-                </button>
-
-                <div className="h-4 w-px bg-stone-200" />
-
                 <button
                   type="button"
                   onClick={() => setZoomScale((z) => Math.max(1, z - 0.5))}
@@ -200,27 +179,26 @@ export const ProductDetailPage: React.FC = () => {
                 </span>
               </div>
 
-              {/* Image Viewport */}
+              {/* Image Viewport - Expanded to fill width of box */}
               <div
                 ref={imageContainerRef}
-                onMouseMove={handleMouseMove}
-                className="w-full flex-1 flex items-center justify-center p-6 sm:p-10 cursor-crosshair overflow-hidden relative"
+                className={`w-full flex-1 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden relative ${
+                  zoomScale > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'
+                }`}
                 onClick={() => setZoomScale((z) => (z === 1 ? 1.75 : 1))}
               >
                 <div
                   className="w-full h-full flex items-center justify-center transition-transform duration-200 ease-out"
                   style={{
-                    transform: isZoomLensActive
-                      ? `scale(2.2) translate(${50 - lensPos.x}%, ${50 - lensPos.y}%)`
-                      : `scale(${zoomScale})`,
-                    transformOrigin: `${lensPos.x}% ${lensPos.y}%`,
+                    transform: `scale(${zoomScale})`,
+                    transformOrigin: 'center center',
                   }}
                 >
                   <img
                     src={currentAngle.url}
                     alt={product.title}
                     referrerPolicy="no-referrer"
-                    className="max-w-full max-h-[580px] w-auto h-auto object-contain drop-shadow-sm select-none"
+                    className="w-full h-full max-h-[680px] sm:max-h-[760px] lg:max-h-[860px] object-contain drop-shadow-md select-none"
                   />
                 </div>
               </div>
@@ -270,11 +248,20 @@ export const ProductDetailPage: React.FC = () => {
                         key={clr.name}
                         type="button"
                         onClick={() => setSelectedColor(clr)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all cursor-pointer ${
+                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all cursor-pointer border ${
                           isSelected
-                            ? 'btn-champagne-size-selected shadow-xs'
-                            : 'btn-champagne-size'
+                            ? 'shadow-xs font-bold'
+                            : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border-stone-200 hover:border-stone-300'
                         }`}
+                        style={
+                          isSelected
+                            ? {
+                                backgroundColor: shoeTheme.selectedBg,
+                                color: shoeTheme.selectedText,
+                                borderColor: shoeTheme.selectedBorder,
+                              }
+                            : undefined
+                        }
                       >
                         {t(clr.name, clr.name)}
                       </button>
@@ -300,19 +287,31 @@ export const ProductDetailPage: React.FC = () => {
                     </button>
                   </div>
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                    {product.sizes.map((sz) => (
-                      <button
-                        key={sz}
-                        onClick={() => setSelectedSize(sz)}
-                        className={`py-2 px-1 text-center rounded-xl text-xs font-mono font-semibold transition-all cursor-pointer ${
-                          selectedSize === sz
-                            ? 'btn-champagne-size-selected shadow-xs'
-                            : 'btn-champagne-size'
-                        }`}
-                      >
-                        {sz}
-                      </button>
-                    ))}
+                    {product.sizes.map((sz) => {
+                      const isSelected = selectedSize === sz;
+                      return (
+                        <button
+                          key={sz}
+                          onClick={() => setSelectedSize(sz)}
+                          className={`py-2 px-1 text-center rounded-xl text-xs font-mono font-semibold transition-all cursor-pointer border ${
+                            isSelected
+                              ? 'shadow-xs font-bold'
+                              : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border-stone-200 hover:border-stone-300'
+                          }`}
+                          style={
+                            isSelected
+                              ? {
+                                  backgroundColor: shoeTheme.selectedBg,
+                                  color: shoeTheme.selectedText,
+                                  borderColor: shoeTheme.selectedBorder,
+                                }
+                              : undefined
+                          }
+                        >
+                          {sz}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -320,10 +319,10 @@ export const ProductDetailPage: React.FC = () => {
               {/* Quantity Selector & Add to Cart */}
               <div className="pt-5 space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center border border-[#d6c9b6] rounded-xl bg-[#faf7f2] h-11 overflow-hidden">
+                  <div className="flex items-center border border-stone-300 rounded-xl bg-stone-50 h-11 overflow-hidden">
                     <button
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="px-3.5 text-stone-700 hover:text-stone-950 text-base font-bold cursor-pointer hover:bg-[#ede3d1] transition-colors"
+                      className="px-3.5 text-stone-700 hover:text-stone-950 text-base font-bold cursor-pointer hover:bg-stone-200/70 transition-colors"
                       aria-label="Decrease quantity"
                     >
                       -
@@ -331,7 +330,7 @@ export const ProductDetailPage: React.FC = () => {
                     <span className="px-3 text-sm font-semibold text-stone-900 font-mono">{quantity}</span>
                     <button
                       onClick={() => setQuantity((q) => q + 1)}
-                      className="px-3.5 text-stone-700 hover:text-stone-950 text-base font-bold cursor-pointer hover:bg-[#ede3d1] transition-colors"
+                      className="px-3.5 text-stone-700 hover:text-stone-950 text-base font-bold cursor-pointer hover:bg-stone-200/70 transition-colors"
                       aria-label="Increase quantity"
                     >
                       +
@@ -340,20 +339,31 @@ export const ProductDetailPage: React.FC = () => {
 
                   <button
                     onClick={handleAddToCart}
-                    className={`flex-1 h-11 rounded-xl font-bold text-xs uppercase tracking-widest transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer ${
+                    className="flex-1 h-11 rounded-xl font-bold text-xs uppercase tracking-widest transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer border active:scale-[0.98]"
+                    style={
                       added
-                        ? 'btn-champagne-added ring-2 ring-[#8c7355]'
-                        : 'btn-champagne-primary'
-                    }`}
+                        ? {
+                            backgroundColor: '#15803d',
+                            borderColor: '#166534',
+                            color: '#ffffff',
+                            boxShadow: '0 0 0 2px rgba(22, 101, 52, 0.3)',
+                          }
+                        : {
+                            backgroundColor: shoeTheme.primaryBg,
+                            borderColor: shoeTheme.primaryBorder,
+                            color: shoeTheme.primaryText,
+                            boxShadow: shoeTheme.primaryShadow,
+                          }
+                    }
                   >
                     {added ? (
                       <>
-                        <Check className="w-4 h-4 text-[#8c7355]" />
+                        <Check className="w-4 h-4 text-white" />
                         <span>{t('ADDED TO SHOPPING BAG', 'ADDED TO SHOPPING BAG')}</span>
                       </>
                     ) : (
                       <>
-                        <ShoppingBag className="w-4 h-4 text-[#8c7355]" />
+                        <ShoppingBag className="w-4 h-4" style={{ color: shoeTheme.primaryText }} />
                         <span>{t('ADD TO CART', 'ADD TO CART')} &bull; {formatPrice(product.priceUSD * quantity)}</span>
                       </>
                     )}
@@ -366,9 +376,9 @@ export const ProductDetailPage: React.FC = () => {
                     setB2BTargetProduct(product);
                     setIsB2BModalOpen(true);
                   }}
-                  className="w-full h-10 rounded-xl btn-champagne-secondary text-xs font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full h-10 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-300 text-stone-800 text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                 >
-                  <Building2 className="w-3.5 h-3.5 text-[#8c7355]" />
+                  <Building2 className="w-3.5 h-3.5 text-stone-600" />
                   <span>{t('Request Wholesale Style Order (MOQ 12 Units)', 'Request Wholesale Style Order (MOQ 12 Units)')}</span>
                 </button>
               </div>
@@ -392,9 +402,10 @@ export const ProductDetailPage: React.FC = () => {
                     onClick={() => setActiveTab('details')}
                     className={`pb-2 text-xs font-bold uppercase tracking-wider cursor-pointer border-b-2 transition-all ${
                       activeTab === 'details'
-                        ? 'border-stone-900 text-stone-950'
+                        ? ''
                         : 'border-transparent text-stone-400 hover:text-stone-700'
                     }`}
+                    style={activeTab === 'details' ? { borderColor: shoeTheme.accentBorder, color: shoeTheme.accentText } : undefined}
                   >
                     {t('Stöffa Product Details', 'Stöffa Product Details')}
                   </button>
@@ -402,9 +413,10 @@ export const ProductDetailPage: React.FC = () => {
                     onClick={() => setActiveTab('craftsmanship')}
                     className={`pb-2 text-xs font-bold uppercase tracking-wider cursor-pointer border-b-2 transition-all ${
                       activeTab === 'craftsmanship'
-                        ? 'border-stone-900 text-stone-950'
+                        ? ''
                         : 'border-transparent text-stone-400 hover:text-stone-700'
                     }`}
+                    style={activeTab === 'craftsmanship' ? { borderColor: shoeTheme.accentBorder, color: shoeTheme.accentText } : undefined}
                   >
                     {t('Fit & Craftsmanship', 'Fit & Craftsmanship')}
                   </button>

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { ChevronLeft, ChevronRight, ShoppingBag, Check, ArrowRight } from 'lucide-react';
-import { useCommerce } from '../context/CommerceContext';
+import { useCommerce, deduplicateProducts } from '../context/CommerceContext';
 import { useCms } from '../context/CmsContext';
 import { EditableText } from './cms/EditableText';
 import { FadeInSection } from './FadeInSection';
@@ -17,10 +17,12 @@ export const EdgeToEdgeNewArrivals: React.FC = () => {
   const subtitle = cmsData.pages.homepage.newArrivalsSubtitle || 'Handcrafted Italian & Indian Silk Wedges, Mules & Minaudières';
 
   // Filter just in items and randomize display order on load
-  const rawArrivals = products.filter((p) => p.isNewArrival || p.badge?.includes('NEW') || p.badge?.includes('JUST IN') || p.id.startsWith('ww_'));
+  const rawArrivals = deduplicateProducts(
+    products.filter((p) => p.isNewArrival || p.badge?.includes('NEW') || p.badge?.includes('JUST IN') || p.id.startsWith('ww_'))
+  );
   const newArrivals = React.useMemo(() => {
     return [...rawArrivals].sort(() => 0.5 - Math.random());
-  }, [products]);
+  }, [rawArrivals]);
 
   const handleScroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -122,7 +124,7 @@ export const EdgeToEdgeNewArrivals: React.FC = () => {
                     <span className="text-[10px] uppercase font-mono tracking-wider text-stone-500 font-semibold block mb-0.5">
                       {t(product.category, product.category)}
                     </span>
-                    <h3 className="font-serif text-sm sm:text-base text-stone-900 font-medium group-hover:text-stone-700 transition-colors line-clamp-1">
+                    <h3 className="font-serif text-sm sm:text-base text-stone-900 font-medium group-hover:text-stone-700 transition-colors line-clamp-2 leading-snug break-words">
                       {t(product.title, product.title)}
                     </h3>
                     <p className="text-[11px] sm:text-xs text-stone-500 line-clamp-1 font-light mt-0.5">

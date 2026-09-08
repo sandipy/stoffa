@@ -6,7 +6,6 @@ import {
   ChevronRight,
   Columns2,
   Edit3,
-  Maximize2,
   Ruler,
   ShieldCheck,
   ShoppingBag,
@@ -41,8 +40,6 @@ export const ProductModal: React.FC = () => {
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<'details' | 'materials'>('details');
   const [zoomScale, setZoomScale] = useState<number>(1);
-  const [isLensActive, setIsLensActive] = useState(false);
-  const [lensPos, setLensPos] = useState({ x: 50, y: 50 });
   const containerRef = useRef<HTMLDivElement>(null);
 
   if (!selectedProductModal) return null;
@@ -87,14 +84,6 @@ export const ProductModal: React.FC = () => {
     addToCart(product, selectedSize, selectedColor, quantity);
     setAdded(true);
     setTimeout(() => setAdded(false), 2200);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setLensPos({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
   };
 
   return (
@@ -179,20 +168,6 @@ export const ProductModal: React.FC = () => {
               <div className="absolute top-3 end-3 z-10 flex items-center gap-1.5 bg-white/95 backdrop-blur-md px-2 py-1 rounded-xl border border-stone-200 shadow-xs">
                 <button
                   type="button"
-                  onClick={() => setIsLensActive(!isLensActive)}
-                  className={`p-1.5 rounded-lg text-xs font-mono flex items-center gap-1 transition-colors cursor-pointer ${
-                    isLensActive ? 'btn-champagne-pill-active font-bold' : 'btn-champagne-pill'
-                  }`}
-                  title="Toggle Lens Magnifier"
-                >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">{isLensActive ? 'Lens' : 'Lens'}</span>
-                </button>
-
-                <div className="h-3.5 w-px bg-stone-200" />
-
-                <button
-                  type="button"
                   onClick={() => setZoomScale((z) => Math.max(1, z - 0.5))}
                   disabled={zoomScale <= 1}
                   className="p-1 rounded text-stone-600 hover:text-stone-950 disabled:opacity-30 cursor-pointer"
@@ -232,27 +207,26 @@ export const ProductModal: React.FC = () => {
                 </>
               )}
 
-              {/* Image Viewport */}
+              {/* Image Viewport - Expanded to fill width of box */}
               <div
                 ref={containerRef}
-                onMouseMove={handleMouseMove}
                 onClick={() => setZoomScale((z) => (z === 1 ? 1.75 : 1))}
-                className="w-full flex-1 flex items-center justify-center p-6 sm:p-8 cursor-crosshair overflow-hidden"
+                className={`w-full flex-1 flex items-center justify-center p-2 sm:p-4 overflow-hidden ${
+                  zoomScale > 1 ? 'cursor-zoom-out' : 'cursor-zoom-in'
+                }`}
               >
                 <div
                   className="w-full h-full flex items-center justify-center transition-transform duration-200"
                   style={{
-                    transform: isLensActive
-                      ? `scale(2.2) translate(${50 - lensPos.x}%, ${50 - lensPos.y}%)`
-                      : `scale(${zoomScale})`,
-                    transformOrigin: `${lensPos.x}% ${lensPos.y}%`,
+                    transform: `scale(${zoomScale})`,
+                    transformOrigin: 'center center',
                   }}
                 >
                   <img
                     src={activeAngle.url}
                     alt={product.title}
                     referrerPolicy="no-referrer"
-                    className="max-w-full max-h-[480px] w-auto h-auto object-contain drop-shadow-sm select-none"
+                    className="w-full h-full max-h-[560px] sm:max-h-[640px] object-contain drop-shadow-md select-none"
                   />
                 </div>
               </div>

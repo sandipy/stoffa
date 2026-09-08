@@ -154,6 +154,12 @@ export function loadCmsContent(): StoreCmsData {
     }
     if (loaded.footer?.brandTagline) {
       loaded.footer.brandTagline = loaded.footer.brandTagline.replace(/✦/g, '').trim();
+      if (loaded.footer.brandTagline.includes("Dual-Density Memory Foam")) {
+        loaded.footer.brandTagline = DEFAULT_CMS_DATA.footer.brandTagline;
+      }
+    }
+    if (loaded.footer?.brandStory && loaded.footer.brandStory.includes("Women's luxury footwear & artisanal bags")) {
+      loaded.footer.brandStory = DEFAULT_CMS_DATA.footer.brandStory;
     }
     inMemoryCmsData = loaded;
     return loaded;

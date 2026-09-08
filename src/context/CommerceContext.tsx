@@ -212,50 +212,38 @@ interface CommerceContextType {
   setIsAdminLoginModalOpen: (open: boolean) => void;
 }
 
+export function deduplicateProducts(prods: Product[]): Product[] {
+  const seenIds = new Set<string>();
+  const seenTitles = new Set<string>();
+  const result: Product[] = [];
+
+  for (const p of prods) {
+    if (!p) continue;
+    const normId = (p.id || '').trim();
+    const normTitle = (p.title || '').trim().toLowerCase().replace(/\s+/g, ' ');
+
+    if (normId && seenIds.has(normId)) continue;
+    if (normTitle && seenTitles.has(normTitle)) continue;
+
+    if (normId) seenIds.add(normId);
+    if (normTitle) seenTitles.add(normTitle);
+    result.push(p);
+  }
+  return result;
+}
+
 const CommerceContext = createContext<CommerceContextType | undefined>(undefined);
 
 export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // --- Persistent or Initialized State ---
   const [products, setProducts] = useState<Product[]>(() => {
-    const CURRENT_CATALOG_VERSION = 'accesoire_pure_luxury_catalog_v10_sections_and_collections';
+    const CURRENT_CATALOG_VERSION = 'accesoire_pure_luxury_catalog_v12_deduped';
     const saved = localStorage.getItem('accesoire_products_usd');
     const catalogSource = localStorage.getItem('accesoire_catalog_source');
 
-    const cleanBaseProducts = STOFFA_STORE_PRODUCTS.map((p) => {
-      const cleanImgs = p.images.filter(
-        (img) =>
-          !img.includes('Madhuri') &&
-          !img.includes('Karina') &&
-          !img.includes('Kareena') &&
-          !img.includes('Alia') &&
-          !img.includes('RASHMIKA') &&
-          !img.includes('SHREYA') &&
-          !img.includes('SONALI') &&
-          !img.includes('KARISHMA') &&
-          !img.includes('Genelia') &&
-          !img.includes('BHAVANA')
-      );
-      return {
-        ...p,
-        originalPriceUSD: undefined,
-        images: cleanImgs.length > 0 ? cleanImgs : p.images,
-      };
-    });
-
-    // Automatically run general logic & AI collection determination initially across all sections
-    const initialEnriched = runInitialCollectionDetermination(cleanBaseProducts);
-
-    if (!saved || catalogSource !== CURRENT_CATALOG_VERSION) {
-      localStorage.setItem('accesoire_catalog_source', CURRENT_CATALOG_VERSION);
-      localStorage.setItem('accesoire_products_usd', JSON.stringify(initialEnriched));
-      return initialEnriched;
-    }
-
-    try {
-      const parsed: Product[] = JSON.parse(saved);
-      const sanitized = parsed.map((p) => {
-        const matchingBase = cleanBaseProducts.find((bp) => bp.id === p.id);
-        const cleanImgs = (p.images || []).filter(
+    const cleanBaseProducts = deduplicateProducts(
+      STOFFA_STORE_PRODUCTS.map((p) => {
+        const cleanImgs = p.images.filter(
           (img) =>
             !img.includes('Madhuri') &&
             !img.includes('Karina') &&
@@ -271,10 +259,48 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return {
           ...p,
           originalPriceUSD: undefined,
-          images: cleanImgs.length > 0 ? cleanImgs : matchingBase ? matchingBase.images : p.images,
+          images: cleanImgs.length > 0 ? cleanImgs : p.images,
         };
-      });
-      const enriched = runInitialCollectionDetermination(sanitized.length > 0 ? sanitized : initialEnriched);
+      })
+    );
+
+    // Automatically run general logic & AI collection determination initially across all sections
+    const initialEnriched = deduplicateProducts(runInitialCollectionDetermination(cleanBaseProducts));
+
+    if (!saved || catalogSource !== CURRENT_CATALOG_VERSION) {
+      localStorage.setItem('accesoire_catalog_source', CURRENT_CATALOG_VERSION);
+      localStorage.setItem('accesoire_products_usd', JSON.stringify(initialEnriched));
+      return initialEnriched;
+    }
+
+    try {
+      const parsed: Product[] = JSON.parse(saved);
+      const sanitized = deduplicateProducts(
+        parsed.map((p) => {
+          const matchingBase = cleanBaseProducts.find((bp) => bp.id === p.id);
+          const cleanImgs = (p.images || []).filter(
+            (img) =>
+              !img.includes('Madhuri') &&
+              !img.includes('Karina') &&
+              !img.includes('Kareena') &&
+              !img.includes('Alia') &&
+              !img.includes('RASHMIKA') &&
+              !img.includes('SHREYA') &&
+              !img.includes('SONALI') &&
+              !img.includes('KARISHMA') &&
+              !img.includes('Genelia') &&
+              !img.includes('BHAVANA')
+          );
+          return {
+            ...p,
+            originalPriceUSD: undefined,
+            images: cleanImgs.length > 0 ? cleanImgs : matchingBase ? matchingBase.images : p.images,
+          };
+        })
+      );
+      const enriched = deduplicateProducts(
+        runInitialCollectionDetermination(sanitized.length > 0 ? sanitized : initialEnriched)
+      );
       return enriched;
     } catch {
       return initialEnriched;
@@ -282,8 +308,9 @@ export const CommerceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   });
 
   const saveProducts = (newProds: Product[]) => {
-    setProducts(newProds);
-    localStorage.setItem('accesoire_products_usd', JSON.stringify(newProds));
+    const deduped = deduplicateProducts(newProds);
+    setProducts(deduped);
+    localStorage.setItem('accesoire_products_usd', JSON.stringify(deduped));
   };
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');

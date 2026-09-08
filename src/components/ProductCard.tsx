@@ -189,7 +189,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 <span className="text-[9px] uppercase font-mono tracking-wider text-amber-300 font-bold">
                   {t('Quick View Spec Sheet', 'Quick View Spec Sheet')}
                 </span>
-                <h4 className="font-serif text-sm font-medium line-clamp-1">{t(product.title, product.title)}</h4>
+                <h4 className="font-serif text-sm font-medium line-clamp-2 leading-snug break-words">{t(product.title, product.title)}</h4>
               </div>
               <button
                 onClick={() => setShowQuickPreview(false)}
@@ -306,7 +306,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           {/* Title and CMS Edit trigger */}
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-serif text-base sm:text-lg text-stone-900 font-medium group-hover:text-stone-700 transition-colors line-clamp-1">
+            <h3 className="font-serif text-base sm:text-lg text-stone-900 font-medium group-hover:text-stone-700 transition-colors line-clamp-2 leading-snug break-words">
               {t(product.title, product.title)}
             </h3>
 

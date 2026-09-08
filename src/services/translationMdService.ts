@@ -13,7 +13,7 @@ export interface ParsedTranslations {
   [langCode: string]: Record<string, string>;
 }
 
-const STORAGE_KEY_MD = 'accessoire_translations_md_content_v6';
+const STORAGE_KEY_MD = 'accessoire_translations_md_content_v7';
 const STORAGE_KEY_LAST_MODIFIED = 'accessoire_translations_last_modified';
 
 class TranslationMdService {
@@ -195,37 +195,51 @@ class TranslationMdService {
   public t(keyOrText: string, langCode: string, fallback?: string): string {
     if (!keyOrText) return fallback || '';
 
+    // If key contains nav_ prefix, normalize to human text if needed
+    const cleanNavKey = (s: string) => {
+      if (s && s.startsWith('nav_')) {
+        const withoutPrefix = s.replace(/^nav_/, '').replace(/_/g, ' ');
+        return withoutPrefix.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
+      return s;
+    };
+
+    const humanKey = cleanNavKey(keyOrText);
+
     const langDict = this.translations[langCode];
     const enDict = this.translations['en'] || {};
     const trimmed = keyOrText.trim();
     const lower = trimmed.toLowerCase();
+    const humanLower = humanKey.toLowerCase();
 
     // 1. Direct key match in chosen language
     if (langDict) {
-      if (langDict[keyOrText]) return langDict[keyOrText];
-      if (langDict[trimmed]) return langDict[trimmed];
+      if (langDict[keyOrText]) return cleanNavKey(langDict[keyOrText]);
+      if (langDict[humanKey]) return cleanNavKey(langDict[humanKey]);
+      if (langDict[trimmed]) return cleanNavKey(langDict[trimmed]);
       // Case-insensitive key match in target language
       for (const [k, val] of Object.entries(langDict)) {
-        if (k.toLowerCase() === lower) {
-          return val;
+        if (k.toLowerCase() === lower || k.toLowerCase() === humanLower) {
+          return cleanNavKey(val);
         }
       }
     }
 
     // 2. Direct key match in English
     if (langCode === 'en') {
-      if (enDict[keyOrText]) return enDict[keyOrText];
-      if (enDict[trimmed]) return enDict[trimmed];
+      if (enDict[keyOrText]) return cleanNavKey(enDict[keyOrText]);
+      if (enDict[humanKey]) return cleanNavKey(enDict[humanKey]);
+      if (enDict[trimmed]) return cleanNavKey(enDict[trimmed]);
     }
 
-    // 3. Search key where English value matches keyOrText
+    // 3. Search key where English value matches keyOrText or humanKey
     for (const [k, val] of Object.entries(enDict)) {
-      if (val.trim().toLowerCase() === lower || k.toLowerCase() === lower) {
+      if (val.trim().toLowerCase() === lower || val.trim().toLowerCase() === humanLower || k.toLowerCase() === lower || k.toLowerCase() === humanLower) {
         if (langDict && langDict[k]) {
-          return langDict[k];
+          return cleanNavKey(langDict[k]);
         }
         if (langCode === 'en') {
-          return val;
+          return cleanNavKey(val);
         }
       }
     }
@@ -237,29 +251,30 @@ class TranslationMdService {
         .replace(/[\u2022•\-_,;:'"✦]/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-    const normKey = normalize(keyOrText);
+    const normKey = normalize(humanKey);
     if (normKey) {
       if (langDict) {
         for (const [k, val] of Object.entries(langDict)) {
           if (normalize(k) === normKey) {
-            return val;
+            return cleanNavKey(val);
           }
         }
       }
       for (const [k, val] of Object.entries(enDict)) {
         if (normalize(k) === normKey || normalize(val) === normKey) {
           if (langDict && langDict[k]) {
-            return langDict[k];
+            return cleanNavKey(langDict[k]);
           }
           if (langCode === 'en') {
-            return val;
+            return cleanNavKey(val);
           }
         }
       }
     }
 
-    // 5. Return fallback or original key
-    return fallback || enDict[keyOrText] || keyOrText;
+    // 5. Return fallback or human key (clean up nav_ and underscores)
+    const rawResult = fallback || enDict[keyOrText] || enDict[humanKey] || humanKey;
+    return cleanNavKey(rawResult);
   }
 
   /**
