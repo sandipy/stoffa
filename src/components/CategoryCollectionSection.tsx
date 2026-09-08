@@ -706,12 +706,7 @@ export const CategoryCollectionSection: React.FC<CategoryCollectionSectionProps>
         )}
 
         {/* Collection Status and Sort Bar */}
-        <div className="flex items-center justify-between border-b-2 border-stone-200 pb-4 mb-8">
-          {/* Left: Total Pieces Count without Exclusive Styles */}
-          <div className="text-xs sm:text-sm font-mono uppercase tracking-[0.14em] text-stone-600">
-            <span>{displayProducts.length} {t('Designs', 'Designs')}</span>
-          </div>
-
+        <div className="flex items-center justify-end border-b-2 border-stone-200 pb-4 mb-8">
           {/* Right: Featured Sort Menu with 4px corners */}
           <div className="relative">
             <button
